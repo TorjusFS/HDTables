@@ -12,6 +12,7 @@
 
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+    <script type="module" src="/src/packages/binders.js"></script>
 
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
@@ -24,6 +25,9 @@
     <div class="ms-welcome__main">
         <div>
             <h3>Variables</h3>
+            <div id="variables">
+            </div>
+            <button id="create-new-variable">Create new variable</button>
         </div>
         <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
             <span class="ms-Button-label">Run</span>

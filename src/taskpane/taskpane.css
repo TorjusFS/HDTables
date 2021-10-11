@@ -34,11 +34,28 @@
     flex-direction: column;
     -webkit-flex-wrap: nowrap;
     flex-wrap: nowrap;
-    -webkit-align-items: center;
-    align-items: center;
     -webkit-flex: 1 0 0;
     flex: 1 0 0;
     padding: 10px 20px;
+ }
+
+ .variable {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    align-items: center;
+ }
+
+ input {
+     height: 1rem;
+     margin-left: 0.5rem;
+     margin-right: 0.5rem;
+
+ }
+
+ button {
+     height: 1.5rem;
  }
  
  .ms-welcome__main > h2 {
