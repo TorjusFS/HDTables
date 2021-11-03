@@ -19,6 +19,7 @@
 
     <!-- Template styles -->
     <link href="taskpane.css" rel="stylesheet" type="text/css" />
+
 </head>
 
 <body class="ms-font-m ms-welcome ms-Fabric">
@@ -29,11 +30,41 @@
             </div>
             <button id="create-new-variable">Create new variable</button>
         </div>
+        <!--
         <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
             <span class="ms-Button-label">Run</span>
         </div>
         <button id="bindCellCelsius">Bind To Celsius</button>
         <button id="bindCellFahrenheit">Bind To Fahrenheit</button>
+        -->
+        <div>
+
+        <h3>Constraints</h3>
+        <div id="added-constraints">
+
+        </div>
+        <div class="constraint">
+            <p>Variable:</p>
+            <input id="first-val"></input>
+        </div>
+        <div class="constraint">
+            <p>Constraint:</p>
+            <input id="constraint-field"></input>
+        </div>        
+        <div class="constraint">
+            <p>Variable:</p>
+            <input id="second-val"></input>
+        </div>
+        <div class="constraint">
+            <p>Constraint:</p>
+            <input id="constraint-field2"></input>
+        </div>
+    </div>
+    <button id="add-constraint">Add constraint</button>
+    <div id="error-message">
+
+    </div>
+
     </div>
 </body>
 

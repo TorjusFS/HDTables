@@ -47,6 +47,23 @@
     align-items: center;
  }
 
+ .letter, .cell {
+    margin-right: 4px;
+}
+
+.constraint {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    align-items: center;
+}
+
+#first-val, #second-val {
+    width: 2rem;
+    margin-left: 1.5rem;
+}
+
  input {
      height: 1rem;
      margin-left: 0.5rem;
