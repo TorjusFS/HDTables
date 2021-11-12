@@ -59,6 +59,10 @@
     align-items: center;
 }
 
+#error-message {
+    color: red
+}
+
 #first-val, #second-val {
     width: 2rem;
     margin-left: 1.5rem;

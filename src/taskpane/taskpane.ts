@@ -8,15 +8,15 @@ import { ConstraintSystem, component, defaultConstraintSystem } from "../hotdrin
 import "../../assets/icon-16.png";
 import "../../assets/icon-32.png";
 import "../../assets/icon-80.png";
-import {binder, addNewVariable, makeConstraint} from "../packages/binders"
+import {binder, addNewVariable, makeConstraint, bindToCelsius, bindToFahrenheit} from "../packages/binders"
 
 /* global console, document, Excel, Office */
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Excel) {
     //document.getElementById("run").onclick = run;
-    //document.getElementById("bindCellCelsius").onclick = bindCellCelsius;
-    //document.getElementById("bindCellFahrenheit").onclick = bindCellFahrenheit;
+    //document.getElementById("bindCellCelsius").onclick = bindToCelsius;
+    //document.getElementById("bindCellFahrenheit").onclick = bindToFahrenheit;
     document.getElementById("create-new-variable").onclick = addNewVariable;
     document.getElementById("add-constraint").onclick = makeConstraint;
   }
