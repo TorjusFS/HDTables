@@ -1,4 +1,8 @@
-import { ConstraintSystem, Component, defaultConstraintSystem, ConstraintSpec, Method, maskNone  } from "../hotdrink/hotdrink";
+import { ConstraintSystem, Component, defaultConstraintSystem, component, ConstraintSpec, Method, maskNone  } from "../hotdrink/hotdrink";
+
+//TODO add global list with all variables
+let variableCount = 97
+let variableList = []
 
 export function binder(value, binding) {
         value.value.subscribe({
@@ -46,6 +50,8 @@ export function bindToFahrenheit() {
             }
         });
 }
+
+
 
 export function bindToCelsius() {
     Office.context.document.bindings.addFromSelectionAsync(
@@ -102,72 +108,86 @@ export function saveToCurrentCell(id) {
 
 export function addNewVariable() {
     console.log("Add new variable");
-    const count = document.getElementById("variables").childElementCount
+    const letter = String.fromCharCode(variableCount);
+    variableList.push(letter)
+    variableCount++;
     document.getElementById("variables").innerHTML += 
-        `<div class="variable" id="${alphabet[count]}wrapper">
-            <p class="letter">${alphabet[count]}</p>
-            <p class="cell" id="${alphabet[count]}cell"></p>
-            <button id="${alphabet[count]}button">Bind to active cell</button>
+        `<div class="variable" id="${letter}wrapper">
+            <p class="letter">${letter}</p>
+            <p class="cell" id="${letter}cell"></p>
+            <button id="${letter}button">Bind to active cell</button>
         </div>`
     
-    addOnClick(count)
+    addOnClick()
   }
 
-function addOnClick(count) {
-    for (let i = 0; i <= count; i++) {
-        document.getElementById(`${alphabet[i]}button`).addEventListener("click", function () {
-            saveToCurrentCell(`${alphabet[i]}`)
+function addOnClick() {
+    for (let i = 0; i < variableList.length; i++) {
+        console.log(variableList[i]);
+        document.getElementById(`${variableList[i]}button`).addEventListener("click", function () {
+            saveToCurrentCell(`${variableList[i]}`)
         }) 
     }
 }
 
 
 export function makeConstraint() {
+    /*
     const system = defaultConstraintSystem;
-    const constraint = document.getElementById("constraint-field").value
-    const constraint2 = document.getElementById("constraint-field2").value
-
-    const firstVal = document.getElementById("first-val").value
-    const secondVal = document.getElementById("second-val").value
-
-    try {
-        
-        const test = eval(`(${secondVal}) => {
-            return ${constraint}
-        }`)
-        const test2 = eval(`(${firstVal}) => {
-            return ${constraint2}
-        }`)
-        test(firstVal)
-        test2(secondVal)
-
-        document.getElementById("added-constraints").innerHTML += `<p>${firstVal} = ${constraint}</p>`
-        document.getElementById("added-constraints").innerHTML += `<p>${secondVal} = ${constraint2}</p>`
+    let comp = system.getComponentByName("Component");
+    if(comp == null){
+        comp = new Component("Component");
+        system.addComponent(comp);
     }
-    catch {
+    */
+    const constraint = document.getElementById("constraint-field").value
+    
+    try {
+        console.log("Started try");
+        const regex = /^(.+)=(\s*([a-z]?)(.*)?)/;
+        const match = regex.exec(constraint)
+        if (!match) {
+            throw "The expression is not correctly typed"
+        }
+        console.log(match[1]);
+        console.log(match[2]);
+        console.log(match[3]);
+        const method1 = new Method(2, [1], [0], [maskNone], eval(`(${match[3]}) => {
+            return ${match[2]}
+        }`));
+    
+        const cspec = new ConstraintSpec(Array.from([method1]));
+        console.log(cspec);
+        
+        const varA = comp.emplaceVariable("a");
+        const varB = comp.emplaceVariable("b");
+    
+        comp.emplaceConstraint("C", cspec, [varA, varB], false);
+        /*
+        const vars = ["a","b"]
+        const constraints = ["(a -> b) => a * 2;","(b -> a) => b / 2;"]
+
+        const comp = component`
+         var ${vars.join(", ")};
+         constraint {
+             ${constraints.join("\n")}
+         }
+        `
+        */
+        //TODO remove old comp
+        system.addComponent(comp)
+        system.update();
+    
+        //TODO unsubscribe before re-binding
+        //TODO binder(comp.vs[match[1].replace(" ", "")], match[1].replace(" ", ""));
+        binder(comp.vs.a, match[1].replace(" ", ""));
+        binder(comp.vs.b, match[3]);
+
+        document.getElementById("added-constraints").innerHTML += `<p>${constraint}</p>`
+    }
+    catch(e) {
+        console.log(e);
         document.getElementById("error-message").innerHTML = `<p>Your variables or constraints are not correctly typed</p>`
         return
     }
-    const method1 = new Method(2, [0], [1], [maskNone], eval(`(${secondVal}) => {
-        return ${constraint}
-    }`));
-    const method2 = new Method(2, [1], [0], [maskNone], eval(`(${firstVal}) => {
-        return ${constraint2}
-    }`));
-
-    const cspec = new ConstraintSpec(Array.from([method1, method2]));
-
-    console.log(cspec);
-    
-    const comp = new Component("Component");
-    const varA = comp.emplaceVariable("a");
-    const varB = comp.emplaceVariable("b");
-
-    comp.emplaceConstraint("C", cspec, [varA, varB], false);
-    
-    system.addComponent(comp);
-    system.update();
-
-    binder(comp.vs.a, firstVal);
-    binder(comp.vs.b, secondVal)
 }
