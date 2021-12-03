@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Blockly for the Web Codelab</title>
+
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body mode="maker">
+  <header>
+    <h1>Music Maker</h1>
+    <h1>Music Maker Configuration</h1>
+  </header>
+
+  <button id="addhtml">Add html</button>
+  <div id="variables">
+    
+  </div>
+
+  <main>
+    <button class="mode-maker mdl-button" id="edit">Edit</button>
+    <button class="mode-blockly mdl-button mdl-js-button" id="save">Save</button>
+    <p class="hint mode-edit">Tap any button to edit its code. <br/>When complete, press Done.</p>
+
+    
+
+    <div class="blockly-editor">
+      <div id="blocklyDiv" style="height: 480px; width: 400px;"></div>
+      <xml id="toolbox" style="display: none">
+        <block type="controls_repeat_ext">
+          <value name="TIMES">
+            <shadow type="math_number">
+              <field name="NUM">5</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="play_sound"></block>
+      </xml>
+    </div>
+  
+  <script src="https://unpkg.com/blockly"></script>
+  <script src="./sound_blocks.js"></script>
+  <script src="./music_maker.js"></script>
+  <script src="./blockly.js"></script>
+
+</body>
+</html>
