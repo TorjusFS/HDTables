@@ -1,4 +1,5 @@
-Blockly.defineBlocksWithJsonArray([
+Excel.run(function (context) {
+  Blockly.defineBlocksWithJsonArray([
     {
       "type": "play_sound",
       "message0": "Play %1",
@@ -25,3 +26,7 @@ Blockly.defineBlocksWithJsonArray([
     let value = '\'' + block.getFieldValue('VALUE') + '\'';
     return 'MusicMaker.queueSound(' + value + ');\n';
   };
+  return context.sync()
+}).catch(error => {
+  console.log(error);
+});

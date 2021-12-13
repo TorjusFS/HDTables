@@ -12,13 +12,13 @@
 
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
-    <script type="module" src="/src/packages/binders.js"></script>
 
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css" type="text/css"/>
 
     <!-- Template styles -->
     <link href="taskpane.css" rel="stylesheet" type="text/css" />
+    <link href="index.css" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -38,21 +38,12 @@
         <button id="bindCellFahrenheit">Bind To Fahrenheit</button>
         -->
         <div>
-
-        <h3>Constraints</h3>
-        <div id="added-constraints">
-
-        </div>
         <!--
         <div class="constraint">
             <p>Variable:</p>
             <input id="first-val"></input>
         </div>
         -->
-        <div class="constraint">
-            <p>Constraint:</p>
-            <input id="constraint-field"></input>
-        </div>
         <!--
 
         <div class="constraint">
@@ -65,7 +56,38 @@
         </div>
     -->
     </div>
-    <button id="add-constraint">Add constraint</button>
+
+    <button id="addhtml">Add html</button>
+    <div id="variables">
+      
+    </div>
+  
+      <button class="mode-maker mdl-button" id="edit">Edit</button>
+      <button class="mode-blockly mdl-button mdl-js-button" id="save">Save</button>
+      <p class="hint mode-edit">Tap any button to edit its code. <br/>When complete, press Done.</p>
+  
+      
+  
+      <div class="blockly-editor">
+        <div id="blocklyDiv" style="height: 480px; width: 400px;"></div>
+        <xml id="toolbox">
+          <block type="controls_repeat_ext">
+            <value name="TIMES">
+              <shadow type="math_number">
+                <field name="NUM">5</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="play_sound"></block>
+        </xml>
+      </div>
+
+    <script type="module" src="../packages/binders.js"></script>
+    
+    <script src="https://unpkg.com/blockly"></script>
+    <script src="../blockly/sound_blocks.js"></script>
+    <script src="../blockly/music_maker.js"></script>
+    <script type="module" src="../blockly/blockly.js"></script>
     <div id="error-message">
 
     </div>

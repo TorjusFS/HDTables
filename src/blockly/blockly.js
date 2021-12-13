@@ -1,18 +1,19 @@
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
  let variableCount = 97;
  let variableList = [];
 
-
+ export function siHei() {
+  Excel.run(function (context) {
+    console.log("YOYOYO");
+    return context.sync()
+}).catch(error => {
+    console.log(error);
+});
+ }
     let currentButton;
   
     function handlePlay(event) {
-      loadWorkspace(event.target);
+      Excel.run(function (context) {
+        loadWorkspace(event.target);
       let code = Blockly.JavaScript.workspaceToCode(Blockly.getMainWorkspace());
       code += 'MusicMaker.play();';
       try {
@@ -20,41 +21,71 @@
       } catch (error) {
         console.log(error);
       }
+        return context.sync()
+    }).catch(error => {
+        console.log(error);
+    });
     }
 
     function save(button) {
-      button.blocklyXml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
+      Excel.run(function (context) {
+        button.blocklyXml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
+        return context.sync()
+    }).catch(error => {
+        console.log(error);
+    });
     }
   
     function loadWorkspace(button) {
-      let workspace = Blockly.getMainWorkspace();
-      workspace.clear();
-      if (button.blocklyXml) {
-        Blockly.Xml.domToWorkspace(button.blocklyXml, workspace);
-      }
+      Excel.run(function (context) {
+        let workspace = Blockly.getMainWorkspace();
+        workspace.clear();
+        if (button.blocklyXml) {
+          Blockly.Xml.domToWorkspace(button.blocklyXml, workspace);
+        }
+        return context.sync()
+    }).catch(error => {
+        console.log(error);
+    });
     }
   
     function handleSave() {
-      document.body.setAttribute('mode', 'edit');
-      save(currentButton);
+      Excel.run(function (context) {
+        console.log("HandleSave");
+        document.body.setAttribute('mode', 'edit');
+        save(currentButton);
+        return context.sync()
+    }).catch(error => {
+        console.log(error);
+    });
     }
   
     function enableMakerMode() {
-      document.body.setAttribute('mode', 'maker');
+      Excel.run(function (context) {
+        document.body.setAttribute('mode', 'maker');
       document.querySelectorAll('.button').forEach(btn => {
         btn.addEventListener('click', handlePlay);
         btn.removeEventListener('click', enableBlocklyMode);
       });
+        return context.sync()
+    }).catch(error => {
+        console.log(error);
+    });
     }
 
-    function enableEditMode() {
-      document.body.setAttribute('mode', 'edit');
-      document.querySelectorAll('.button').forEach(btn => {
-        btn.addEventListener('click', enableBlocklyMode);
-      });
-    }
+export function enableEditMode() {
+  Excel.run(function (context) {
+    document.body.setAttribute('mode', 'edit');
+    document.querySelectorAll('.button').forEach(btn => {
+      btn.addEventListener('click', enableBlocklyMode);
+    });
+    return context.sync()
+}).catch(error => {
+    console.log(error);
+});
+}
   
-    function addNewVariable() {
+    export function addNewVariable() {
       console.log("Add new variable");
       const letter = String.fromCharCode(variableCount);
       variableList.push(letter)
@@ -71,12 +102,17 @@
     }
 
     function addOnClick() {
-      for (let i = 0; i < variableList.length; i++) {
+      Excel.run(function (context) {
+        for (let i = 0; i < variableList.length; i++) {
           console.log(variableList[i]);
           document.getElementById(`${variableList[i]}button`).addEventListener("click", function () {
               saveToCurrentCell(`${variableList[i]}`)
           }) 
       }
+        return context.sync()
+    }).catch(error => {
+        console.log(error);
+    });
   }
   
     
@@ -84,12 +120,17 @@
 
 
     function enableBlocklyMode(e) {
-      document.body.setAttribute('mode', 'blockly');
-      currentButton = e.target;
-      loadWorkspace(currentButton);
+      Excel.run(function (context) {
+        document.body.setAttribute('mode', 'blockly');
+        currentButton = e.target;
+        loadWorkspace(currentButton);
+        return context.sync()
+    }).catch(error => {
+        console.log(error);
+    });
     }
 
-    
+
 function bindValueToCell(id) {
   Office.context.document.bindings.addFromSelectionAsync(
       Office.BindingType.Text,
@@ -124,15 +165,20 @@ function saveToCurrentCell(id) {
   });
 }
 
+
     //document.querySelector('#edit').addEventListener('click', enableEditMode);
     //document.querySelector('#save').addEventListener('click', handleSave);
 
-    document.querySelector("#addhtml").addEventListener('click', addNewVariable)
-    document.querySelector('#save').addEventListener('click', handleSave);
-    enableEditMode()
 
-  
-    Blockly.inject('blocklyDiv', {
+    Excel.run(function (context) {
+      document.querySelector("#addhtml").addEventListener('click', addNewVariable);
+      document.querySelector('#save').addEventListener('click', handleSave);
+      enableEditMode();
+      Blockly.inject('blocklyDiv', {
       toolbox: document.getElementById('toolbox'),
       scrollbars: false
-    });
+    })
+      return context.sync()
+  }).catch(error => {
+      console.log(error);
+  });

@@ -4,7 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
- const MusicMaker = {
+ 
+
+ Excel.run(function (context) {
+  const MusicMaker = {
     queue_: [],
     player_: new Audio(),
     queueSound: function(soundUrl) {
@@ -22,3 +25,8 @@
   MusicMaker.player_.addEventListener(
       'ended', MusicMaker.play.bind(MusicMaker));
   
+  return context.sync()
+}).catch(error => {
+  console.log(error);
+});
+ 

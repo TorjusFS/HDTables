@@ -9,6 +9,7 @@ import "../../assets/icon-16.png";
 import "../../assets/icon-32.png";
 import "../../assets/icon-80.png";
 import {binder, addNewVariable, makeConstraint, bindToCelsius, bindToFahrenheit} from "../packages/binders"
+import {siHei} from "../blockly/blockly"
 
 /* global console, document, Excel, Office */
 
@@ -17,8 +18,10 @@ Office.onReady((info) => {
     //document.getElementById("run").onclick = run;
     //document.getElementById("bindCellCelsius").onclick = bindToCelsius;
     //document.getElementById("bindCellFahrenheit").onclick = bindToFahrenheit;
-    document.getElementById("create-new-variable").onclick = addNewVariable;
-    document.getElementById("add-constraint").onclick = makeConstraint;
+    //document.getElementById("create-new-variable").onclick = addNewVariable;
+    //document.getElementById("add-constraint").onclick = makeConstraint;
+    siHei()
+
   }
 });
 

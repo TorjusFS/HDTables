@@ -107,6 +107,7 @@ export function saveToCurrentCell(id) {
 }
 
 export function addNewVariable() {
+    console.log("MOHAHAHAH");
     console.log("Add new variable");
     const letter = String.fromCharCode(variableCount);
     variableList.push(letter)
@@ -132,6 +133,7 @@ function addOnClick() {
 
 
 export function makeConstraint() {
+    console.log("YAHAHAH");
     /*
     const system = defaultConstraintSystem;
     let comp = system.getComponentByName("Component");
