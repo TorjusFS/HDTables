@@ -22,7 +22,7 @@
 
 </head>
 
-<body class="ms-font-m ms-welcome ms-Fabric">
+<body mode="maker">
     <div class="ms-welcome__main">
         <div>
             <h3>Variables</h3>
@@ -57,37 +57,26 @@
     -->
     </div>
 
-    <button id="addhtml">Add html</button>
+    <!--<button id="addhtml">Add html</button>-->
     <div id="variables">
       
     </div>
   
-      <button class="mode-maker mdl-button" id="edit">Edit</button>
-      <button class="mode-blockly mdl-button mdl-js-button" id="save">Save</button>
-      <p class="hint mode-edit">Tap any button to edit its code. <br/>When complete, press Done.</p>
   
       
   
       <div class="blockly-editor">
-        <div id="blocklyDiv" style="height: 480px; width: 400px;"></div>
-        <xml id="toolbox">
-          <block type="controls_repeat_ext">
-            <value name="TIMES">
-              <shadow type="math_number">
-                <field name="NUM">5</field>
-              </shadow>
-            </value>
-          </block>
-          <block type="play_sound"></block>
-        </xml>
+      <button class="mode-blockly mdl-button mdl-js-button" id="save">Save</button>
+      <button class="mode-blockly mdl-button mdl-js-button" id="cancel">Cancel</button>
+        <div id="blocklyDiv" style="height: 480px;"></div>
       </div>
 
-    <script type="module" src="../packages/binders.js"></script>
+    <!--<script type="module" src="../packages/binders.js"></script>-->
     
-    <script src="https://unpkg.com/blockly"></script>
-    <script src="../blockly/sound_blocks.js"></script>
-    <script src="../blockly/music_maker.js"></script>
-    <script type="module" src="../blockly/blockly.js"></script>
+    <!--<script src="https://unpkg.com/blockly"></script>-->
+    <!--<script src="../blockly/sound_blocks.js"></script>
+    <script src="../blockly/music_maker.js"></script>-->
+    <!--<script type="module" src="../blockly/blockly.js"></script>-->
     <div id="error-message">
 
     </div>

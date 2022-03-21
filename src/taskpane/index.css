@@ -35,11 +35,12 @@ main {
   .blockly-editor {
     position: absolute;
     top: 64px;
-    left: -400px;
+    left: -700px;
     transition: left .4s;
     height: 460px;
-    width: 400px;
+    width: 700px;
     background-color: #eee;
+    overflow: auto;
   }
   
   [mode="blockly"] .blockly-editor {
@@ -59,18 +60,5 @@ main {
     justify-content: space-between;
   }
   
-  .button {
-    width: 120px;
-    height: 140px;
-    color: #fff;
-    font-size: 3em;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 140px;
-  }
-  
-  .mdl-button {
-    margin: 1em 0;
-    float: right;
-  }
+
   
