@@ -87,19 +87,7 @@ export function setupToolbox() {
         contents: [
           {
               kind: "block",
-              message0: "set %1 to %2",
-              args0: [
-                {
-                  type: "field_variable",
-                  name: "VAR",
-                  variable: "item",
-                  variableTypes: [""]
-                },
-                {
-                  type: "input_value",
-                  name: "VALUE"
-                }
-              ]
+              type: "return_block"
           },
         ],
       },

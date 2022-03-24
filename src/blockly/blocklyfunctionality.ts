@@ -1,8 +1,13 @@
 import * as Blockly from "blockly";
 import * as JavaScript from "blockly/javascript";
-
+import { ConstraintSystem, Component, defaultConstraintSystem, component, ConstraintSpec, Method, maskNone  } from "../hotdrink/hotdrink";
+import {binder} from "../packages/binders"
 let variableCount = 97;
 let variableList = [];
+
+const system = defaultConstraintSystem;
+const comp = new Component("Component");
+system.addComponent(comp);
 
 export function siHei() {}
 
@@ -46,7 +51,7 @@ export function setupVariableBlock() {
 
   JavaScript["variables"] = function (block) {
     let code = block.getFieldValue("FIELD_NAME");
-    return [code, 0]
+    return [code, 99]
   };
 }
 
@@ -70,9 +75,28 @@ export function setupMethodBlock() {
 
   JavaScript["method_block"] = function (block) {
     let chosenVariable = block.getFieldValue("drop_down");
+    let variables = getVariables(block);
     let code = JavaScript.statementToCode(block, 'METHOD');
-    return code
+    return `{
+      "inputs": [${variables}],
+      "outputs": "${chosenVariable}",
+      "code": "${code}"
+    },`
   };
+}
+
+function getVariables(block) {
+  const children = block.getDescendants()
+  let variables = []
+  children.forEach(elem => {
+    if (elem["type"] === "variables") {
+      let str = `"${elem.getFieldValue("FIELD_NAME")}"`
+      variables.push(str)
+    }
+  }
+  )
+  
+  return variables
 }
 
 function save(button) {
@@ -90,7 +114,8 @@ function loadWorkspace(button) {
 function handleSave() {
   Excel.run(function (context) {
     console.log("HandleSave");
-    testCode()
+    
+    addConstraint(currentButton.id)
     document.body.setAttribute("mode", "edit");
     save(currentButton);
     return context.sync();
@@ -123,26 +148,36 @@ export function enableEditMode() {
   });
 }
 
+function changeName(event, index) {
+  let tempVar = variableList[index]
+  tempVar = [event.target.value, tempVar[1]]
+  variableList[index] = tempVar
+}
 
 export function addNewVariable() {
   console.log("Add new variable");
   const letter = String.fromCharCode(variableCount);
   variableList.push([letter, letter]);
   console.log(letter);
-
+  const index = letter.charCodeAt(0)-97
+  const variableName = variableList[index][0]
   variableCount++;
   const wrapper = document.createElement("div");
   wrapper.classList.add("variable");
   wrapper.id = `${letter}wrapper`;
-  wrapper.innerHTML = ` <p class="letter">${letter}</p>
+  wrapper.innerHTML = ` <input value=${variableName} id="${letter}input" class="letter"></input>
                         <p class="cell" id="${letter}cell"></p>
-                        <button id="${letter}button">Bind to active cell</button>
-                        <button class="button blockly">Edit constraint</button>`;
+                        <button id="${letter}button" class="knapp">Bind to active cell</button>`;
   document.getElementById("variables").appendChild(wrapper)
-  wrapper.querySelector(".button").addEventListener("click", enableBlocklyMode);
+  document.getElementById(`${letter}input`).addEventListener("change", function (event) {
+    changeName(event, index)
+  });
   document.getElementById(`${letter}button`).addEventListener("click", function () {
     saveToCurrentCell(`${letter}`);
   });
+  
+  comp.emplaceVariable(letter, null);
+  binder(comp.vs[letter], letter);
   setupVariableBlock()
 }
 
@@ -158,6 +193,21 @@ function addOnClick() {
   }).catch((error) => {
     console.log(error);
   });
+}
+
+let constraintCount = 0
+let constraintList = []
+
+function makeNewConstraint() {
+  constraintCount++;
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("constraint");
+  wrapper.id = `${constraintCount}wrapper`;
+  wrapper.innerHTML = ` <p class="letter">Constrant ${constraintCount}</p>
+                        <button id=${constraintCount} class="button blockly knapp">Edit</button>`;
+  document.getElementById("constraints").appendChild(wrapper)
+  wrapper.querySelector(".button").addEventListener("click", enableBlocklyMode);
+  document.querySelector(".button").addEventListener("click", enableBlocklyMode);
 }
 
 function enableBlocklyMode(e) {
@@ -204,6 +254,95 @@ export function setupEvent() {
   document.querySelector("#create-new-variable").addEventListener("click", addNewVariable);
   document.querySelector("#save").addEventListener("click", handleSave);
   document.querySelector("#cancel").addEventListener("click", cancelButton);
+  document.querySelector("#new-constraint").addEventListener("click", makeNewConstraint);
+
   enableEditMode();
   
+}
+
+
+function addConstraint(constraintId) {
+  let workspace = Blockly.getMainWorkspace();
+  let code = JavaScript.workspaceToCode(workspace);
+  try {
+    console.log(code);
+    
+    let newCode = `
+      {
+        "methods": [${code.slice(0, code.length-1)}]
+      }
+    `
+    code = JSON.parse(newCode)
+    console.log(code.length);
+    const allVars = []
+    code["methods"].forEach(elem => {
+      elem.inputs.forEach(input => {
+        if (!allVars.includes(input)) {
+          allVars.push(input)
+        }
+      })
+      if (!allVars.includes(elem.outputs)) {
+        allVars.push(elem.outputs)
+      }
+    })
+    console.log(allVars);
+    
+    const methods = code["methods"].map(elem => {
+      const inPositions = elem.inputs.map(inn =>
+        allVars.indexOf(inn))
+      const outPositions = allVars.indexOf(elem.outputs)
+      return new Method(allVars.length, inPositions, [outPositions], [maskNone], eval(`(${elem.inputs.join(',')}) => {
+        ${elem.code}
+    }`));
+    })
+
+    if (comp.cs[constraintId]){
+      console.log(comp.cs[constraintId])
+      system.removeConstraint(comp.cs[constraintId])
+      system.update();
+      console.log(comp.cs[constraintId])
+    }
+    
+    const vars = allVars.map(v => {return comp.getVariableReference(v)})
+    const cspec = new ConstraintSpec(Array.from(methods));
+    comp.emplaceConstraint(constraintId, cspec, vars, false);
+    console.log(comp.constraintName(constraintId));
+    system.update();
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+function lol() {
+  /*
+  component`
+        var income = 500000, percentage = 30, time = 12, finnmark = false, deduction, tax, net_income;
+        
+        constraint {
+            (income, percentage, deduction -> tax, net_income) => {
+                var newTax = (income * percentage / 100) - deduction;
+                var newNet_income = income - newTax;
+                return [newTax, newNet_income];
+            }
+            (tax, net_income, deduction, percentage -> income) => {
+                var newIncome = parseInt(net_income) + parseInt(tax);
+                return newIncome;
+            }
+        }
+        
+        constraint {
+            (finnmark, time -> deduction) => {
+                var timeDeduction = 9163 * time;
+                var finnmarkDeduction = 20000;
+                if (finnmark) {
+                    return timeDeduction + finnmarkDeduction;
+                } else {
+                    return timeDeduction;
+                }
+            }
+        }
+    `
+    */
 }

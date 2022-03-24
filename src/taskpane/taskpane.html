@@ -25,10 +25,20 @@
 <body mode="maker">
     <div class="ms-welcome__main">
         <div>
-            <h3>Variables</h3>
+            <div class="header">
+                <h3>Variables</h3>
+                <button id="create-new-variable" class="button-1">+</button>
+            </div>
             <div id="variables">
             </div>
-            <button id="create-new-variable">Create new variable</button>
+            <div class="header">
+                <h3>Constraints</h3>
+                <button id="new-constraint" class="button-1">+</button>
+            </div>
+            <div id="constraints">
+                
+            </div>
+            
         </div>
         <!--
         <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
@@ -58,16 +68,16 @@
     </div>
 
     <!--<button id="addhtml">Add html</button>-->
-    <div id="variables">
-      
-    </div>
+    
   
   
       
   
       <div class="blockly-editor">
-      <button class="mode-blockly mdl-button mdl-js-button" id="save">Save</button>
-      <button class="mode-blockly mdl-button mdl-js-button" id="cancel">Cancel</button>
+          <div class="blockly-buttons">
+      <button class="mode-blockly mdl-button mdl-js-button save-button" id="save">Save</button>
+      <button class="mode-blockly mdl-button mdl-js-button cancel-button" id="cancel">Cancel</button>
+    </div>
         <div id="blocklyDiv" style="height: 480px;"></div>
       </div>
 

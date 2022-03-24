@@ -134,14 +134,12 @@ function addOnClick() {
 
 export function makeConstraint() {
     console.log("YAHAHAH");
-    /*
     const system = defaultConstraintSystem;
     let comp = system.getComponentByName("Component");
     if(comp == null){
         comp = new Component("Component");
         system.addComponent(comp);
     }
-    */
     const constraint = document.getElementById("constraint-field").value
     
     try {
