@@ -12,23 +12,33 @@
 
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
-    <script type="module" src="/src/packages/binders.js"></script>
 
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css" type="text/css"/>
 
     <!-- Template styles -->
     <link href="taskpane.css" rel="stylesheet" type="text/css" />
+    <link href="index.css" rel="stylesheet" type="text/css" />
 
 </head>
 
-<body class="ms-font-m ms-welcome ms-Fabric">
+<body mode="maker">
     <div class="ms-welcome__main">
         <div>
-            <h3>Variables</h3>
+            <div class="header">
+                <h3>Variables</h3>
+                <button id="create-new-variable" class="button-1">+</button>
+            </div>
             <div id="variables">
             </div>
-            <button id="create-new-variable">Create new variable</button>
+            <div class="header">
+                <h3>Constraints</h3>
+                <button id="new-constraint" class="button-1">+</button>
+            </div>
+            <div id="constraints">
+                
+            </div>
+            
         </div>
         <!--
         <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
@@ -38,19 +48,14 @@
         <button id="bindCellFahrenheit">Bind To Fahrenheit</button>
         -->
         <div>
-
-        <h3>Constraints</h3>
-        <div id="added-constraints">
-
-        </div>
+        <!--
         <div class="constraint">
             <p>Variable:</p>
             <input id="first-val"></input>
         </div>
-        <div class="constraint">
-            <p>Constraint:</p>
-            <input id="constraint-field"></input>
-        </div>        
+        -->
+        <!--
+
         <div class="constraint">
             <p>Variable:</p>
             <input id="second-val"></input>
@@ -59,8 +64,29 @@
             <p>Constraint:</p>
             <input id="constraint-field2"></input>
         </div>
+    -->
     </div>
-    <button id="add-constraint">Add constraint</button>
+
+    <!--<button id="addhtml">Add html</button>-->
+    
+  
+  
+      
+  
+      <div class="blockly-editor">
+          <div class="blockly-buttons">
+      <button class="mode-blockly mdl-button mdl-js-button save-button" id="save">Save</button>
+      <button class="mode-blockly mdl-button mdl-js-button cancel-button" id="cancel">Cancel</button>
+    </div>
+        <div id="blocklyDiv" style="height: 480px;"></div>
+      </div>
+
+    <!--<script type="module" src="../packages/binders.js"></script>-->
+    
+    <!--<script src="https://unpkg.com/blockly"></script>-->
+    <!--<script src="../blockly/sound_blocks.js"></script>
+    <script src="../blockly/music_maker.js"></script>-->
+    <!--<script type="module" src="../blockly/blockly.js"></script>-->
     <div id="error-message">
 
     </div>

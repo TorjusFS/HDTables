@@ -8,7 +8,14 @@ import { ConstraintSystem, component, defaultConstraintSystem } from "../hotdrin
 import "../../assets/icon-16.png";
 import "../../assets/icon-32.png";
 import "../../assets/icon-80.png";
-import {binder, addNewVariable, makeConstraint, bindToCelsius, bindToFahrenheit} from "../packages/binders"
+import {binder, makeConstraint, bindToCelsius, bindToFahrenheit} from "../packages/binders"
+import {setupMusicMaker} from "../blockly/music_maker"
+//import {setupSoundBlocks} from "../blockly/sound_blocks"
+import {setupVariableBlock, setupMethodBlock} from "../blockly/blocklyfunctionality"
+import { setupToolbox } from "../blockly/toolbox";
+import { setupRetrun } from "../blockly/returnBlock";
+
+import {siHei,setupEvent, enableEditMode, addNewVariable} from "../blockly/blocklyfunctionality"
 
 /* global console, document, Excel, Office */
 
@@ -17,10 +24,20 @@ Office.onReady((info) => {
     //document.getElementById("run").onclick = run;
     //document.getElementById("bindCellCelsius").onclick = bindToCelsius;
     //document.getElementById("bindCellFahrenheit").onclick = bindToFahrenheit;
-    document.getElementById("create-new-variable").onclick = addNewVariable;
-    document.getElementById("add-constraint").onclick = makeConstraint;
+    //document.getElementById("create-new-variable").onclick = addNewVariable;
+    //document.getElementById("add-constraint").onclick = makeConstraint;
+    //siHola()
+    //siHallo()
+    //setupSoundBlocks()
+    setupToolbox()
+    setupRetrun()
+    setupMethodBlock()
+    setupVariableBlock()
+    setupEvent()
+    
   }
 });
+
 
 export async function run() {
   try {

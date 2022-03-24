@@ -27,6 +27,7 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
+    "blockly": "^6.20210701.0",
     "core-js": "^3.9.1",
     "regenerator-runtime": "^0.13.7"
   },

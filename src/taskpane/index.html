@@ -1,0 +1,107 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contoso Task Pane Add-in</title>
+
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+    <script type="module" src="/src/packages/binders.js"></script>
+    <script type="module" src="/src/hotdrink/hotdrink.js"></script>
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>>
+    <link href="taskpane.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../blockly/index.css">
+
+</head>
+
+<body mode="maker" class="ms-font-m ms-welcome ms-Fabric">
+   
+    <div class="ms-welcome__main">
+        <div>
+            <h3>Variables</h3>
+            <div id="variables">
+            </div>
+            <button id="create-new-variable">Create new variable</button>
+        </div>
+        <!--
+        <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
+            <span class="ms-Button-label">Run</span>
+        </div>
+        <button id="bindCellCelsius">Bind To Celsius</button>
+        <button id="bindCellFahrenheit">Bind To Fahrenheit</button>
+        -->
+        <div>
+
+        <h3>Constraints</h3>
+        <div id="added-constraints">
+
+        </div>
+        <!--
+        <div class="constraint">
+            <p>Variable:</p>
+            <input id="first-val"></input>
+        </div>
+        -->
+        <div class="constraint">
+            <p>Constraint:</p>
+            <input id="constraint-field"></input>
+        </div>
+        <!--
+
+        <div class="constraint">
+            <p>Variable:</p>
+            <input id="second-val"></input>
+        </div>
+        <div class="constraint">
+            <p>Constraint:</p>
+            <input id="constraint-field2"></input>
+        </div>
+    -->
+    </div>
+    <!--
+    <button id="add-constraint">Add constraint</button>
+    <div id="error-message">
+
+    </div>
+-->
+    </div>
+
+    <button id="addhtml">Add html</button>
+    <div id="variables">
+      
+    </div>
+  
+    <main>
+      <button class="mode-maker mdl-button" id="edit">Edit</button>
+      <button class="mode-blockly mdl-button mdl-js-button" id="save">Save</button>
+      <p class="hint mode-edit">Tap any button to edit its code. <br/>When complete, press Done.</p>
+  
+      
+  
+      <div class="blockly-editor">
+        <div id="blocklyDiv" style="height: 480px; width: 400px;"></div>
+        <xml id="toolbox" style="display: none">
+          <block type="controls_repeat_ext">
+            <value name="TIMES">
+              <shadow type="math_number">
+                <field name="NUM">5</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="play_sound"></block>
+        </xml>
+      </div>
+    
+    <script src="https://unpkg.com/blockly"></script>
+    <script src="./blockly.js"></script>
+    <script src="./music_maker.js"></script>
+    <script src="./blockly.js"></script>
+</body>
+
+</html>
