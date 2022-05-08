@@ -9,12 +9,9 @@ export function binder(value, binding) {
             next: val => {
                 if (val.hasOwnProperty('value')) {
                     Office.select(`bindings#${binding}`).getDataAsync(function (asyncResult) {
-                        //console.log(binding + " has value " + asyncResult.value);
-                        //console.log("The other value is " + val.value);
                         if (asyncResult.value !== val.value) {
-                            Office.select(`bindings#${binding}`).setDataAsync(val.value, function (asyncResult3) {
-                                //console.log(val.value);
-                            })
+                            Office.select(`bindings#${binding}`).setDataAsync(val.value, function (asyncResult3) {  
+                            })  
                     }
                     })
                 }
@@ -23,7 +20,6 @@ export function binder(value, binding) {
         Office.select(`bindings#${binding}`).addHandlerAsync(
             Office.EventType.BindingDataChanged, function() {
                 Office.select(`bindings#${binding}`).getDataAsync(function (asyncResult) {
-
                     if (value.value._value !== asyncResult.value) {
                         console.log("AsyncResult " + asyncResult.value);
                         value.value.set(asyncResult.value)
@@ -85,7 +81,7 @@ function bindValueToCell(id) {
                     return context.sync().then(function () {
                         console.log(`Binded ${activeCell.address.slice(7)} to ${id}`);
                         console.log("The active cell is " + activeCell.address);
-                        document.getElementById(`${id}cell`).innerHTML = ` = ${activeCell.address.slice(7)}`
+                        document.getElementById(`${id}cell`).innerHTML = ` = ${activeCell.address}`
                     });
                 }).catch( e => {
                     console.log("Could not get active cell");
@@ -134,12 +130,14 @@ function addOnClick() {
 
 export function makeConstraint() {
     console.log("YAHAHAH");
+    /*
     const system = defaultConstraintSystem;
     let comp = system.getComponentByName("Component");
     if(comp == null){
         comp = new Component("Component");
         system.addComponent(comp);
     }
+    */
     const constraint = document.getElementById("constraint-field").value
     
     try {

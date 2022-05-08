@@ -51,52 +51,8 @@ export function setupVariableBlock() {
 
   JavaScript["variables"] = function (block) {
     let code = block.getFieldValue("FIELD_NAME");
-    return [code, 99]
+    return [code, 0]
   };
-}
-
-export function setupMethodBlock() {
-  Blockly.Blocks['method_block'] = {
-    init: function() {
-      this.appendDummyInput()
-      .appendField("set")
-      .appendField(new Blockly.FieldDropdown(this.onchange), "drop_down")
-      .appendField("to be");
-      this.appendStatementInput("METHOD")
-          .setCheck(null);
-      this.setColour(230);
-   this.setTooltip("");
-   this.setHelpUrl("");
-    },
-    onchange: function (e) {
-      return variableList.length > 0 ? variableList : [["", ""]]
-    }
-  };
-
-  JavaScript["method_block"] = function (block) {
-    let chosenVariable = block.getFieldValue("drop_down");
-    let variables = getVariables(block);
-    let code = JavaScript.statementToCode(block, 'METHOD');
-    return `{
-      "inputs": [${variables}],
-      "outputs": "${chosenVariable}",
-      "code": "${code}"
-    },`
-  };
-}
-
-function getVariables(block) {
-  const children = block.getDescendants()
-  let variables = []
-  children.forEach(elem => {
-    if (elem["type"] === "variables") {
-      let str = `"${elem.getFieldValue("FIELD_NAME")}"`
-      variables.push(str)
-    }
-  }
-  )
-  
-  return variables
 }
 
 function save(button) {
@@ -115,9 +71,11 @@ function handleSave() {
   Excel.run(function (context) {
     console.log("HandleSave");
     
-    addConstraint(currentButton.id)
-    document.body.setAttribute("mode", "edit");
-    save(currentButton);
+    let success = addConstraint(currentButton.id)
+    if (success) {
+      document.body.setAttribute("mode", "edit");
+      save(currentButton);
+    }
     return context.sync();
   }).catch((error) => {
     console.log(error);
@@ -125,6 +83,7 @@ function handleSave() {
 }
 
 function cancelButton () {
+  document.getElementById('blockly-error').innerHTML = ""
   document.body.setAttribute("mode", "edit");
 }
 
@@ -148,7 +107,13 @@ export function enableEditMode() {
   });
 }
 
-function changeName(event, index) {
+function changeName(event, index, name) {
+  if (!event) {
+  let tempVar = variableList[index]
+  tempVar = [name, tempVar[1]]
+  variableList[index] = tempVar
+  return
+  }
   let tempVar = variableList[index]
   tempVar = [event.target.value, tempVar[1]]
   variableList[index] = tempVar
@@ -170,7 +135,7 @@ export function addNewVariable() {
                         <button id="${letter}button" class="knapp">Bind to active cell</button>`;
   document.getElementById("variables").appendChild(wrapper)
   document.getElementById(`${letter}input`).addEventListener("change", function (event) {
-    changeName(event, index)
+    changeName(event, index, null)
   });
   document.getElementById(`${letter}button`).addEventListener("click", function () {
     saveToCurrentCell(`${letter}`);
@@ -220,7 +185,7 @@ function bindValueToCell(id) {
   Office.context.document.bindings.addFromSelectionAsync(Office.BindingType.Text, { id: id }, function (asyncResult) {
     if (asyncResult.status == Office.AsyncResultStatus.Failed) {
       console.log("Failed to bind");
-    } else {
+    } else {  
       Excel.run(function (context) {
         var activeCell = context.workbook.getActiveCell();
         activeCell.load("address");
@@ -228,13 +193,45 @@ function bindValueToCell(id) {
         return context.sync().then(function () {
           console.log(`Binded ${activeCell.address.slice(7)} to ${id}`);
           console.log("The active cell is " + activeCell.address);
-          document.getElementById(`${id}cell`).innerHTML = ` = ${activeCell.address.slice(7)}`;
+          // slice(7) ensures getting only the cell name from the cell (f.ex: A1)
+          document.getElementById(`${id}cell`).innerHTML = ` = ${activeCell.address}`;
         });
       }).catch((e) => {
         console.log("Could not get active cell");
       });
     }
   });
+}
+
+function bindRange() {
+  Excel.run(async (context) => {
+    let range = context.workbook.getSelectedRange();
+
+    range.load("address");
+    range.load("columnCount")
+
+    context.sync().then(() => {
+      if (range.columnCount !== 1) {
+        return
+      }
+      const sheet = context.workbook.worksheets.getActiveWorksheet();
+      let newRange = sheet.getRange(range.address)
+      newRange.load(['values'])
+      
+      context.sync().then(() => {
+        let myValues = newRange.values
+        for (let i = 0; i < myValues.length; i++) {
+          addNewVariable()
+          var inputF = document.getElementById(`${variableList[variableList.length-1][1]}input`);
+          inputF.setAttribute('value', myValues[i][0])
+          changeName(null, variableList.length-1, myValues[i][0])
+          console.log(variableList);
+          
+            }
+      })
+    })
+    
+});
 }
 
 function saveToCurrentCell(id) {
@@ -255,6 +252,7 @@ export function setupEvent() {
   document.querySelector("#save").addEventListener("click", handleSave);
   document.querySelector("#cancel").addEventListener("click", cancelButton);
   document.querySelector("#new-constraint").addEventListener("click", makeNewConstraint);
+  document.querySelector("#create-variable-range").addEventListener("click", bindRange);
 
   enableEditMode();
   
@@ -266,40 +264,63 @@ function addConstraint(constraintId) {
   let code = JavaScript.workspaceToCode(workspace);
   try {
     console.log(code);
+    code = code.replace(/(\n)/gm,"");
     
     let newCode = `
       {
         "methods": [${code.slice(0, code.length-1)}]
       }
     `
-    code = JSON.parse(newCode)
+    console.log(newCode);
+    
+    try {
+      code = JSON.parse(newCode)
+    }
+    catch (e) {
+      document.getElementById('blockly-error').innerHTML = "There is something wrong with your code"
+      return false
+    }
     console.log(code.length);
     const allVars = []
     code["methods"].forEach(elem => {
+      if (checkMethods(elem)) {
+
       elem.inputs.forEach(input => {
         if (!allVars.includes(input)) {
           allVars.push(input)
         }
       })
-      if (!allVars.includes(elem.outputs)) {
-        allVars.push(elem.outputs)
-      }
-    })
+      elem.outputs.forEach(output => {
+        if (!allVars.includes(output)) {
+          allVars.push(output)
+        }
+      })
+    }
+    else {
+      document.getElementById('blockly-error').innerHTML = "There is something wrong with your code"
+      return false
+    }
+  }
+    )
     console.log(allVars);
     
     const methods = code["methods"].map(elem => {
       const inPositions = elem.inputs.map(inn =>
         allVars.indexOf(inn))
-      const outPositions = allVars.indexOf(elem.outputs)
-      return new Method(allVars.length, inPositions, [outPositions], [maskNone], eval(`(${elem.inputs.join(',')}) => {
+      const outPositions = elem.outputs.map(out =>
+        allVars.indexOf(out))
+      return new Method(allVars.length, inPositions, outPositions, [maskNone], eval(`(${elem.inputs.join(',')}) => {
         ${elem.code}
     }`));
     })
-
-    if (comp.cs[constraintId]){
-      console.log(comp.cs[constraintId])
-      system.removeConstraint(comp.cs[constraintId])
-      system.update();
+    const oldConstraint = comp.cs[constraintId]
+    if (oldConstraint){
+      console.log(constraintId);
+      
+      console.log(oldConstraint)
+      system.removeConstraint(oldConstraint)
+      comp["_constraintNames"].delete(oldConstraint)
+      system.updateDirty();
       console.log(comp.cs[constraintId])
     }
     
@@ -308,13 +329,21 @@ function addConstraint(constraintId) {
     comp.emplaceConstraint(constraintId, cspec, vars, false);
     console.log(comp.constraintName(constraintId));
     system.update();
-
+    document.getElementById('blockly-error').innerHTML = ""
+    return true
   } catch (error) {
     console.log(error);
+    
+    document.getElementById('blockly-error').innerHTML = "There is something wrong with your code"
+    return false
   }
 }
 
-
+function checkMethods(elem) {
+  console.log(elem);
+  return true
+  
+}
 function lol() {
   /*
   component`

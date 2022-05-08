@@ -35,10 +35,10 @@ main {
   .blockly-editor {
     position: absolute;
     top: 64px;
-    left: -700px;
+    left: -100%;
     transition: left .4s;
-    height: 460px;
-    width: 700px;
+    height: 100%;
+    width: 100%;
     background-color: #eee;
     overflow: auto;
   }
@@ -97,6 +97,22 @@ main {
   margin-left: 0.5rem;
 }
 
+.button-2 {
+  margin-left: 1rem;
+  border-style: none;
+  background-color: #30c26d;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #FFFFFF;
+  outline: none;
+  touch-action: manipulation;
+  cursor: pointer;
+  height: 30px;
+  border-radius: 3px;
+}
+.button-2:hover {
+  background-color: #3eca78;
+}
+
 .button-1:hover {
   background-color: #3eca78;
 }
@@ -132,4 +148,9 @@ main {
 
 .cancel-button:hover {
   background-color: #ff6d6d;
+}
+
+#blockly-error {
+  margin-left: 1rem;
+  color: #ff5656;
 }

@@ -11,11 +11,13 @@ import "../../assets/icon-80.png";
 import {binder, makeConstraint, bindToCelsius, bindToFahrenheit} from "../packages/binders"
 import {setupMusicMaker} from "../blockly/music_maker"
 //import {setupSoundBlocks} from "../blockly/sound_blocks"
-import {setupVariableBlock, setupMethodBlock} from "../blockly/blocklyfunctionality"
+import {setupVariableBlock} from "../blockly/blocklyfunctionality"
 import { setupToolbox } from "../blockly/toolbox";
 import { setupRetrun } from "../blockly/returnBlock";
-
 import {siHei,setupEvent, enableEditMode, addNewVariable} from "../blockly/blocklyfunctionality"
+import { setupTempVarSetter, setupTempVarGetter, setupUpdateTempVar} from "../blockly/tempVarBlock";
+import { setupMethodBlock } from "../blockly/methodBlock";
+import { setupVariablePairBlock } from "../blockly/hotdrinkVarPairBlock";
 
 /* global console, document, Excel, Office */
 
@@ -33,7 +35,12 @@ Office.onReady((info) => {
     setupRetrun()
     setupMethodBlock()
     setupVariableBlock()
+    setupVariablePairBlock()
     setupEvent()
+    setupTempVarSetter()
+    setupTempVarGetter()
+    setupUpdateTempVar()
+    
     
   }
 });

@@ -17,6 +17,6 @@ export function setupRetrun() {
   JavaScript['return_block'] = function(block) {
     var value_name = JavaScript.valueToCode(block, 'NAME', JavaScript.ORDER_ATOMIC);
     let code = block.getFieldValue('Return');
-    return "return " + value_name;
+    return "return " + value_name + "; ";
   };
 }

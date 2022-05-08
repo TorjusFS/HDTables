@@ -69,6 +69,22 @@ export function setupToolbox() {
             kind: "block",
             type: "math_number",
           },
+          {
+            kind: "block",
+            type: "variable_pair",
+          },
+          {
+            kind: "block",
+            type: "temp_var_setter"
+          },
+          {
+            kind: "block",
+            type: "temp_var_update"
+          },
+          {
+            kind: "block",
+            type: "temp_var_getter"
+          },
         ],
       },
       {
@@ -94,6 +110,6 @@ export function setupToolbox() {
       
     ],
   };
-
+  //Blockly.Variables.createVariableButtonHandler("blocklyDiv", null, 'panda');
   Blockly.inject("blocklyDiv", { toolbox: toolbox });
 }
