@@ -1,12 +1,20 @@
 import * as Blockly from "blockly";
 import * as JavaScript from "blockly/javascript";
-import { ConstraintSystem, Component, defaultConstraintSystem, component, ConstraintSpec, Method, maskNone  } from "../hotdrink/hotdrink";
-import {binder} from "../packages/binders"
+import {
+  ConstraintSystem,
+  Component,
+  defaultConstraintSystem,
+  component,
+  ConstraintSpec,
+  Method,
+  maskNone,
+} from "../hotdrink/hotdrink";
+import { binder } from "../packages/binders";
 let variableCount = 97;
 let variableList = [];
 
 const system = defaultConstraintSystem;
-const comp = new Component("Component");
+let comp = new Component("Component");
 system.addComponent(comp);
 
 export function siHei() {}
@@ -28,30 +36,27 @@ function testCode() {
   let workspace = Blockly.getMainWorkspace();
   let code = JavaScript.workspaceToCode(workspace);
   try {
-    console.log(code)
+    console.log(code);
   } catch (error) {
     console.log(error);
   }
 }
 
 export function setupVariableBlock() {
-  Blockly.Blocks['variables'] = {
-    init: function() {
-      this.appendDummyInput()
-          .appendField("")
-          .appendField(new Blockly.FieldDropdown(this.onchange), "FIELD_NAME");
+  Blockly.Blocks["variables"] = {
+    init: function () {
+      this.appendDummyInput().appendField("").appendField(new Blockly.FieldDropdown(this.onchange), "FIELD_NAME");
       this.setColour(230);
       this.setOutput(true);
-      
     },
     onchange: function (e) {
-      return variableList.length > 0 ? variableList : [["", ""]]
-    }
+      return variableList.length > 0 ? variableList : [["", ""]];
+    },
   };
 
   JavaScript["variables"] = function (block) {
     let code = block.getFieldValue("FIELD_NAME");
-    return [code, 0]
+    return [code, 0];
   };
 }
 
@@ -70,8 +75,8 @@ function loadWorkspace(button) {
 function handleSave() {
   Excel.run(function (context) {
     console.log("HandleSave");
-    
-    let success = addConstraint(currentButton.id)
+
+    let success = addConstraint(currentButton.id);
     if (success) {
       document.body.setAttribute("mode", "edit");
       save(currentButton);
@@ -82,8 +87,8 @@ function handleSave() {
   });
 }
 
-function cancelButton () {
-  document.getElementById('blockly-error').innerHTML = ""
+function cancelButton() {
+  document.getElementById("blockly-error").innerHTML = "";
   document.body.setAttribute("mode", "edit");
 }
 
@@ -109,14 +114,14 @@ export function enableEditMode() {
 
 function changeName(event, index, name) {
   if (!event) {
-  let tempVar = variableList[index]
-  tempVar = [name, tempVar[1]]
-  variableList[index] = tempVar
-  return
+    let tempVar = variableList[index];
+    tempVar = [name, tempVar[1]];
+    variableList[index] = tempVar;
+    return;
   }
-  let tempVar = variableList[index]
-  tempVar = [event.target.value, tempVar[1]]
-  variableList[index] = tempVar
+  let tempVar = variableList[index];
+  tempVar = [event.target.value, tempVar[1]];
+  variableList[index] = tempVar;
 }
 
 export function addNewVariable() {
@@ -124,8 +129,8 @@ export function addNewVariable() {
   const letter = String.fromCharCode(variableCount);
   variableList.push([letter, letter]);
   console.log(letter);
-  const index = letter.charCodeAt(0)-97
-  const variableName = variableList[index][0]
+  const index = letter.charCodeAt(0) - 97;
+  const variableName = variableList[index][0];
   variableCount++;
   const wrapper = document.createElement("div");
   wrapper.classList.add("variable");
@@ -133,17 +138,17 @@ export function addNewVariable() {
   wrapper.innerHTML = ` <input value=${variableName} id="${letter}input" class="letter"></input>
                         <p class="cell" id="${letter}cell"></p>
                         <button id="${letter}button" class="knapp">Bind to active cell</button>`;
-  document.getElementById("variables").appendChild(wrapper)
+  document.getElementById("variables").appendChild(wrapper);
   document.getElementById(`${letter}input`).addEventListener("change", function (event) {
-    changeName(event, index, null)
+    changeName(event, index, null);
   });
   document.getElementById(`${letter}button`).addEventListener("click", function () {
     saveToCurrentCell(`${letter}`);
   });
-  
+
   comp.emplaceVariable(letter, null);
   binder(comp.vs[letter], letter);
-  setupVariableBlock()
+  setupVariableBlock();
 }
 
 function addOnClick() {
@@ -160,8 +165,8 @@ function addOnClick() {
   });
 }
 
-let constraintCount = 0
-let constraintList = []
+let constraintCount = 0;
+let constraintList = [];
 
 function makeNewConstraint() {
   constraintCount++;
@@ -170,7 +175,7 @@ function makeNewConstraint() {
   wrapper.id = `${constraintCount}wrapper`;
   wrapper.innerHTML = ` <p class="letter">Constrant ${constraintCount}</p>
                         <button id=${constraintCount} class="button blockly knapp">Edit</button>`;
-  document.getElementById("constraints").appendChild(wrapper)
+  document.getElementById("constraints").appendChild(wrapper);
   wrapper.querySelector(".button").addEventListener("click", enableBlocklyMode);
   document.querySelector(".button").addEventListener("click", enableBlocklyMode);
 }
@@ -185,7 +190,7 @@ function bindValueToCell(id) {
   Office.context.document.bindings.addFromSelectionAsync(Office.BindingType.Text, { id: id }, function (asyncResult) {
     if (asyncResult.status == Office.AsyncResultStatus.Failed) {
       console.log("Failed to bind");
-    } else {  
+    } else {
       Excel.run(function (context) {
         var activeCell = context.workbook.getActiveCell();
         activeCell.load("address");
@@ -208,30 +213,28 @@ function bindRange() {
     let range = context.workbook.getSelectedRange();
 
     range.load("address");
-    range.load("columnCount")
+    range.load("columnCount");
 
     context.sync().then(() => {
       if (range.columnCount !== 1) {
-        return
+        return;
       }
       const sheet = context.workbook.worksheets.getActiveWorksheet();
-      let newRange = sheet.getRange(range.address)
-      newRange.load(['values'])
-      
+      let newRange = sheet.getRange(range.address);
+      newRange.load(["values"]);
+
       context.sync().then(() => {
-        let myValues = newRange.values
+        let myValues = newRange.values;
         for (let i = 0; i < myValues.length; i++) {
-          addNewVariable()
-          var inputF = document.getElementById(`${variableList[variableList.length-1][1]}input`);
-          inputF.setAttribute('value', myValues[i][0])
-          changeName(null, variableList.length-1, myValues[i][0])
+          addNewVariable();
+          var inputF = document.getElementById(`${variableList[variableList.length - 1][1]}input`);
+          inputF.setAttribute("value", myValues[i][0]);
+          changeName(null, variableList.length - 1, myValues[i][0]);
           console.log(variableList);
-          
-            }
-      })
-    })
-    
-});
+        }
+      });
+    });
+  });
 }
 
 function saveToCurrentCell(id) {
@@ -255,95 +258,118 @@ export function setupEvent() {
   document.querySelector("#create-variable-range").addEventListener("click", bindRange);
 
   enableEditMode();
-  
 }
-
 
 function addConstraint(constraintId) {
   let workspace = Blockly.getMainWorkspace();
   let code = JavaScript.workspaceToCode(workspace);
   try {
     console.log(code);
-    code = code.replace(/(\n)/gm,"");
-    
+    code = code.replace(/(\n)/gm, "");
+
     let newCode = `
       {
-        "methods": [${code.slice(0, code.length-1)}]
+        "methods": [${code.slice(0, code.length - 1)}]
       }
-    `
+    `;
     console.log(newCode);
-    
+
     try {
-      code = JSON.parse(newCode)
-    }
-    catch (e) {
-      document.getElementById('blockly-error').innerHTML = "There is something wrong with your code"
-      return false
+      code = JSON.parse(newCode);
+    } catch (e) {
+      document.getElementById("blockly-error").innerHTML = "There is something wrong with your code";
+      return false;
     }
     console.log(code.length);
-    const allVars = []
-    code["methods"].forEach(elem => {
-      if (checkMethods(elem)) {
-
-      elem.inputs.forEach(input => {
+    const allVars = [];
+    code["methods"].forEach((elem) => {
+      elem.inputs.forEach((input) => {
         if (!allVars.includes(input)) {
-          allVars.push(input)
+          allVars.push(input);
         }
-      })
-      elem.outputs.forEach(output => {
+      });
+      elem.outputs.forEach((output) => {
         if (!allVars.includes(output)) {
-          allVars.push(output)
+          allVars.push(output);
         }
-      })
-    }
-    else {
-      document.getElementById('blockly-error').innerHTML = "There is something wrong with your code"
-      return false
-    }
-  }
-    )
+      });
+    });
     console.log(allVars);
-    
-    const methods = code["methods"].map(elem => {
-      const inPositions = elem.inputs.map(inn =>
-        allVars.indexOf(inn))
-      const outPositions = elem.outputs.map(out =>
-        allVars.indexOf(out))
-      return new Method(allVars.length, inPositions, outPositions, [maskNone], eval(`(${elem.inputs.join(',')}) => {
+
+    const methods = code["methods"].map((elem) => {
+      const inPositions = elem.inputs.map((inn) => allVars.indexOf(inn));
+      const outPositions = elem.outputs.map((out) => allVars.indexOf(out));
+      return new Method(
+        allVars.length,
+        inPositions,
+        outPositions,
+        [maskNone],
+        eval(`(${elem.inputs.join(",")}) => {
         ${elem.code}
-    }`));
-    })
-    const oldConstraint = comp.cs[constraintId]
-    if (oldConstraint){
-      console.log(constraintId);
-      
-      console.log(oldConstraint)
-      system.removeConstraint(oldConstraint)
-      comp["_constraintNames"].delete(oldConstraint)
-      system.updateDirty();
-      console.log(comp.cs[constraintId])
+    }`)
+      );
+    });
+    const oldConstraint = comp.cs[constraintId];
+    if (oldConstraint) {
+      return addNewComponent(constraintId, methods, allVars);
     }
-    
-    const vars = allVars.map(v => {return comp.getVariableReference(v)})
+
+    const vars = allVars.map((v) => {
+      return comp.getVariableReference(v);
+    });
     const cspec = new ConstraintSpec(Array.from(methods));
     comp.emplaceConstraint(constraintId, cspec, vars, false);
     console.log(comp.constraintName(constraintId));
     system.update();
-    document.getElementById('blockly-error').innerHTML = ""
-    return true
+    document.getElementById("blockly-error").innerHTML = "";
+    return true;
   } catch (error) {
     console.log(error);
-    
-    document.getElementById('blockly-error').innerHTML = "There is something wrong with your code"
-    return false
+
+    document.getElementById("blockly-error").innerHTML = "There is something wrong with your code";
+    return false;
   }
 }
 
-function checkMethods(elem) {
-  console.log(elem);
-  return true
-  
+function addNewComponent(constraintId, methods, allVars) {
+  try {
+    system.removeComponent(comp);
+    let newComp = new Component("Component");
+    system.addComponent(newComp);
+    for (let i = 0; i < variableList.length; i++) {
+      newComp.emplaceVariable(variableList[i][1], null);
+      binder(newComp.vs[variableList[i][1]], variableList[i][1]);
+    }
+    for (let i = 1; i <= constraintCount; i++) {
+      if (String(i) !== constraintId) {
+        const compVars = comp.cs[String(i)]["_varRefs"];
+        const compCspec = comp.cs[String(i)]["_cspec"];
+        const someVars = compVars.map((v) => {
+            return newComp.getVariableReference(v.name);
+        });
+        
+        
+        newComp.emplaceConstraint(String(i), compCspec, someVars, false);
+        system.update();
+        
+      }
+    }
+    const vars = allVars.map((v) => {
+      return newComp.getVariableReference(v);
+    });
+    const cspec = new ConstraintSpec(Array.from(methods));
+    newComp.emplaceConstraint(constraintId, cspec, vars, false);
+    system.update();
+    document.getElementById("blockly-error").innerHTML = "";
+    comp = newComp;
+    return true;
+  } catch (e) {
+    console.log(e);
+    document.getElementById("blockly-error").innerHTML = "There is something wrong with your code";
+    return false;
+  }
 }
+
 function lol() {
   /*
   component`

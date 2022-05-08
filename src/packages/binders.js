@@ -5,6 +5,7 @@ let variableCount = 97
 let variableList = []
 
 export function binder(value, binding) {
+        console.log(value)
         value.value.subscribe({
             next: val => {
                 if (val.hasOwnProperty('value')) {
@@ -81,7 +82,7 @@ function bindValueToCell(id) {
                     return context.sync().then(function () {
                         console.log(`Binded ${activeCell.address.slice(7)} to ${id}`);
                         console.log("The active cell is " + activeCell.address);
-                        document.getElementById(`${id}cell`).innerHTML = ` = ${activeCell.address}`
+                        document.getElementById(`${id}cell`).innerHTML = ` = ${activeCell.address.slice(7)}`
                     });
                 }).catch( e => {
                     console.log("Could not get active cell");
