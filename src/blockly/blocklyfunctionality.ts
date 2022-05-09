@@ -296,17 +296,12 @@ function addConstraint(constraintId) {
     });
     console.log(allVars);
 
-    const methods = code["methods"].map((elem) => {
-      const inPositions = elem.inputs.map((inn) => allVars.indexOf(inn));
-      const outPositions = elem.outputs.map((out) => allVars.indexOf(out));
-      return new Method(
-        allVars.length,
-        inPositions,
-        outPositions,
-        [maskNone],
-        eval(`(${elem.inputs.join(",")}) => {
-        ${elem.code}
-    }`)
+    const methods = code["methods"].map((method) => {
+      const inPositions = method.inputs.map((inn) => allVars.indexOf(inn));
+      const outPositions = method.outputs.map((out) => allVars.indexOf(out));
+      return new Method(allVars.length, inPositions, outPositions, [maskNone], eval(`(${method.inputs.join(",")}) => {
+        ${method.code}
+        }`)
       );
     });
     const oldConstraint = comp.cs[constraintId];
