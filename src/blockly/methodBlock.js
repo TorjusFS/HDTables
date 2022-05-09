@@ -25,25 +25,32 @@ export function setupMethodBlock() {
       let inputs = getVariables(block.getInputTargetBlock("METHOD"), "FIELD_NAME");
   
       let outputs = block.getInputTargetBlock("variable")
-      if (outputs["type"] === "variable_pair") {
+      if (outputs && outputs["type"] === "variable_pair") {
         outputs = getVariables(block.getInputTargetBlock("variable"), "FIELD_NAME");
       }
-      else {
+      else if (outputs) {
         outputs = [`"${outputs.getFieldValue("FIELD_NAME")}"`]
+      }
+      else {
+        throw "No variables in the top placeholder of a method block"
       }
   
       let returnBlock = block.getInputTargetBlock("RETURN")
       let returnValue = JavaScript.valueToCode(block, 'RETURN', 99)
-      
+      let returnValueList = []
       if (returnBlock && returnBlock["type"] === "variable_pair") {
         returnValue = "[" + returnValue + "]"
-  
+        returnValueList = returnValue.split(',')
         const variablesInReturn = getVariables(returnBlock, "FIELD_NAME")
         variablesInReturn.forEach(elem => inputs.push(elem))
       }
-      if (returnBlock) {
+      else if (returnBlock) {
+        returnValueList = [1]
         const variablesInReturn = getVariables(returnBlock, "FIELD_NAME")
         variablesInReturn.forEach(elem => inputs.push(elem))
+      }
+      else {
+        throw "No blocks in the return placeholder of a mehtod block"
       }
       
       let uniqueInputs = inputs.filter((element, index) => {
@@ -51,7 +58,12 @@ export function setupMethodBlock() {
     });
     let uniqueOutputs = outputs.filter((element, index) => {
       return outputs.indexOf(element) === index;
+
   });
+  if (uniqueOutputs.length !== returnValueList.length) {
+    throw "Not same amount of output and return values in a method block"
+  }
+
       let code = JavaScript.statementToCode(block, 'METHOD') + " \nreturn " + returnValue + "; "
       return `{
         "inputs": [${uniqueInputs}],
@@ -60,7 +72,7 @@ export function setupMethodBlock() {
       },`
     }
     catch (e) {
-    document.getElementById('blockly-error').innerHTML = "There is something wrong with your code"
+      document.getElementById('blockly-error').innerHTML = e
     }
     };
   }

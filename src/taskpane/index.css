@@ -128,6 +128,18 @@ main {
   background-color: #ffd079;
 }
 
+.delete {
+  background-color: #ff5656;
+  border-radius: 3px;
+  border: 0px;
+  color: rgb(0, 0, 0);
+  margin-left: 0.5rem;
+}
+
+.delete:hover {
+  background-color: #ff6d6d;
+}
+
 .save-button {
   border-radius: 3px;
   border: 0px;

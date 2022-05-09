@@ -78,6 +78,7 @@ function handleSave() {
 
     let success = addConstraint(currentButton.id);
     if (success) {
+      constraintList.push(currentButton.id)
       document.body.setAttribute("mode", "edit");
       save(currentButton);
     }
@@ -125,10 +126,8 @@ function changeName(event, index, name) {
 }
 
 export function addNewVariable() {
-  console.log("Add new variable");
   const letter = String.fromCharCode(variableCount);
   variableList.push([letter, letter]);
-  console.log(letter);
   const index = letter.charCodeAt(0) - 97;
   const variableName = variableList[index][0];
   variableCount++;
@@ -154,7 +153,6 @@ export function addNewVariable() {
 function addOnClick() {
   Excel.run(function (context) {
     for (let i = 0; i < variableList.length; i++) {
-      //console.log(variableList[i]);
       document.getElementById(`${variableList[i]}button`).addEventListener("click", function () {
         saveToCurrentCell(`${variableList[i]}`);
       });
@@ -165,19 +163,29 @@ function addOnClick() {
   });
 }
 
-let constraintCount = 0;
+let totalConstraintsMade = 0;
+let activeConstraints = []
 let constraintList = [];
 
 function makeNewConstraint() {
-  constraintCount++;
+  const cCount = ++totalConstraintsMade;
+  activeConstraints.push(cCount)
   const wrapper = document.createElement("div");
   wrapper.classList.add("constraint");
-  wrapper.id = `${constraintCount}wrapper`;
-  wrapper.innerHTML = ` <p class="letter">Constrant ${constraintCount}</p>
-                        <button id=${constraintCount} class="button blockly knapp">Edit</button>`;
+  wrapper.id = `${cCount}wrapper`;
+  wrapper.innerHTML = ` <p class="letter">Constraint ${cCount}</p>
+                        <button id=${cCount} class="button blockly knapp">Edit</button>
+                        <button id="${cCount}delete" class="delete">Delete</button>`;
   document.getElementById("constraints").appendChild(wrapper);
   wrapper.querySelector(".button").addEventListener("click", enableBlocklyMode);
   document.querySelector(".button").addEventListener("click", enableBlocklyMode);
+  document.getElementById(`${cCount}delete`).addEventListener("click", function () {
+    deleteConstraint(`${cCount}`);
+  });
+  let lol = document.getElementById("constraints")
+  console.log(lol);
+  
+  
 }
 
 function enableBlocklyMode(e) {
@@ -294,7 +302,6 @@ function addConstraint(constraintId) {
         }
       });
     });
-    console.log(allVars);
 
     const methods = code["methods"].map((method) => {
       const inPositions = method.inputs.map((inn) => allVars.indexOf(inn));
@@ -314,7 +321,6 @@ function addConstraint(constraintId) {
     });
     const cspec = new ConstraintSpec(Array.from(methods));
     comp.emplaceConstraint(constraintId, cspec, vars, false);
-    console.log(comp.constraintName(constraintId));
     system.update();
     document.getElementById("blockly-error").innerHTML = "";
     return true;
@@ -328,6 +334,12 @@ function addConstraint(constraintId) {
 
 function addNewComponent(constraintId, methods, allVars) {
   try {
+    
+    if (constraintList.includes(constraintId)) {
+      if (!methods && !allVars) {
+        constraintList = constraintList.filter(elem => elem != constraintId)
+      }
+    
     system.removeComponent(comp);
     let newComp = new Component("Component");
     system.addComponent(newComp);
@@ -335,34 +347,41 @@ function addNewComponent(constraintId, methods, allVars) {
       newComp.emplaceVariable(variableList[i][1], null);
       binder(newComp.vs[variableList[i][1]], variableList[i][1]);
     }
-    for (let i = 1; i <= constraintCount; i++) {
-      if (String(i) !== constraintId) {
-        const compVars = comp.cs[String(i)]["_varRefs"];
-        const compCspec = comp.cs[String(i)]["_cspec"];
+    for (let id in constraintList) {
+      if (constraintList[id] !== constraintId) {
+        const compVars = comp.cs[constraintList[id]]["_varRefs"];
+        const compCspec = comp.cs[constraintList[id]]["_cspec"];
         const someVars = compVars.map((v) => {
             return newComp.getVariableReference(v.name);
         });
         
-        
-        newComp.emplaceConstraint(String(i), compCspec, someVars, false);
+        newComp.emplaceConstraint(id, compCspec, someVars, false);
         system.update();
         
       }
     }
+    if (methods && allVars) {
     const vars = allVars.map((v) => {
       return newComp.getVariableReference(v);
     });
     const cspec = new ConstraintSpec(Array.from(methods));
     newComp.emplaceConstraint(constraintId, cspec, vars, false);
+  }
     system.update();
     document.getElementById("blockly-error").innerHTML = "";
     comp = newComp;
     return true;
+}
   } catch (e) {
     console.log(e);
     document.getElementById("blockly-error").innerHTML = "There is something wrong with your code";
     return false;
   }
+}
+
+function deleteConstraint(constraintId) {
+  addNewComponent(constraintId, null, null)
+  document.getElementById(`${constraintId}wrapper`).remove()
 }
 
 function lol() {
