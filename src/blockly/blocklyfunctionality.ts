@@ -1,10 +1,8 @@
 import * as Blockly from "blockly";
 import * as JavaScript from "blockly/javascript";
 import {
-  ConstraintSystem,
   Component,
   defaultConstraintSystem,
-  component,
   ConstraintSpec,
   Method,
   maskNone,
@@ -16,9 +14,6 @@ let variableList = [];
 const system = defaultConstraintSystem;
 let comp = new Component("Component");
 system.addComponent(comp);
-
-export function siHei() {}
-
 let currentButton;
 
 function handlePlay(event) {
@@ -27,16 +22,6 @@ function handlePlay(event) {
   code += "MusicMaker.play();";
   try {
     eval(code);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function testCode() {
-  let workspace = Blockly.getMainWorkspace();
-  let code = JavaScript.workspaceToCode(workspace);
-  try {
-    console.log(code);
   } catch (error) {
     console.log(error);
   }
@@ -74,7 +59,7 @@ function loadWorkspace(button) {
 
 function handleSave() {
   Excel.run(function (context) {
-    console.log("HandleSave");
+    
 
     let success = addConstraint(currentButton.id);
     if (success) {
@@ -195,20 +180,16 @@ function enableBlocklyMode(e) {
 function bindValueToCell(id) {
   Office.context.document.bindings.addFromSelectionAsync(Office.BindingType.Text, { id: id }, function (asyncResult) {
     if (asyncResult.status == Office.AsyncResultStatus.Failed) {
-      console.log("Failed to bind");
+
     } else {
       Excel.run(function (context) {
         var activeCell = context.workbook.getActiveCell();
         activeCell.load("address");
 
         return context.sync().then(function () {
-          console.log(`Binded ${activeCell.address.slice(7)} to ${id}`);
-          console.log("The active cell is " + activeCell.address);
-          // slice(7) ensures getting only the cell name from the cell (f.ex: A1)
           document.getElementById(`${id}cell`).innerHTML = ` = ${activeCell.address}`;
         });
       }).catch((e) => {
-        console.log("Could not get active cell");
       });
     }
   });
@@ -236,7 +217,6 @@ function bindRange() {
           var inputF = document.getElementById(`${variableList[variableList.length - 1][1]}input`);
           inputF.setAttribute("value", myValues[i][0]);
           changeName(null, variableList.length - 1, myValues[i][0]);
-          console.log(variableList);
         }
       });
     });
@@ -256,7 +236,6 @@ function saveToCurrentCell(id) {
 //document.querySelector('#save').addEventListener('click', handleSave);
 
 export function setupEvent() {
-  console.log("setupEvent");
   document.querySelector("#create-new-variable").addEventListener("click", addNewVariable);
   document.querySelector("#save").addEventListener("click", handleSave);
   document.querySelector("#cancel").addEventListener("click", cancelButton);
@@ -270,7 +249,6 @@ function addConstraint(constraintId) {
   let workspace = Blockly.getMainWorkspace();
   let code = JavaScript.workspaceToCode(workspace);
   try {
-    console.log(code);
     code = code.replace(/(\n)/gm, "");
 
     let newCode = `
@@ -278,7 +256,6 @@ function addConstraint(constraintId) {
         "methods": [${code.slice(0, code.length - 1)}]
       }
     `;
-    console.log(newCode);
 
     try {
       code = JSON.parse(newCode);
@@ -286,7 +263,6 @@ function addConstraint(constraintId) {
       document.getElementById("blockly-error").innerHTML = "There is something wrong with your code";
       return false;
     }
-    console.log(code.length);
     const allVars = [];
     code["methods"].forEach((elem) => {
       elem.inputs.forEach((input) => {
@@ -311,7 +287,6 @@ function addConstraint(constraintId) {
     }); 
     const oldConstraint = comp.cs[constraintId];
     if (oldConstraint) {
-      console.log("THIS IS AN OLD CONSTRAINT!");
       return addNewComponent(constraintId, methods, allVars);
     }
 
@@ -336,12 +311,9 @@ function addNewComponent(constraintId, methods, allVars) {
   try {
     
     if (constraintList.includes(constraintId)) {
-      console.log("ID: " + constraintId);
       
       if (!methods && !allVars) {
-        console.log("DELETING CONSTRAINT");
         constraintList = constraintList.filter(elem => elem != constraintId)
-        console.log(constraintList.length);
       }
     
     system.removeComponent(comp);
@@ -354,8 +326,6 @@ function addNewComponent(constraintId, methods, allVars) {
     }
     for (let id in constraintList) {
       if (constraintList[id] !== constraintId) {
-        console.log("Constraint in list: " + constraintList[id]);
-        console.log("ConstraintId: " + constraintId);
         
         const compVars = comp.cs[constraintList[id]]["_varRefs"];
         const compCspec = comp.cs[constraintList[id]]["_cspec"];
@@ -375,11 +345,8 @@ function addNewComponent(constraintId, methods, allVars) {
     const cspec = new ConstraintSpec(Array.from(methods));
     newComp.emplaceConstraint(constraintId, cspec, vars, false);
   }
-    console.log("MAKING NEW COMPONENT");
-    console.log(comp);
     
     comp = newComp;
-    console.log(comp);
     
     system.update();
     document.getElementById("blockly-error").innerHTML = "";
