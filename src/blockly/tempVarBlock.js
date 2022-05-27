@@ -19,7 +19,7 @@ export function setupTempVarSetter() {
   JavaScript["temp_var_setter"] = function (block) {
     let name = block.getFieldValue("TEMP_VAR_VAL");
     let value = JavaScript.valueToCode(block, "TEMP_VAR_NAME", 99);
-    let code = "let " + name + " = " + value + ";";
+    let code = "let xx" + name + " = " + value + ";";
     return code;
   };
 }
@@ -41,7 +41,7 @@ export function setupUpdateTempVar() {
   JavaScript["temp_var_update"] = function (block) {
     let name = block.getFieldValue("TEMP_VAR_VAL");
     let value = JavaScript.valueToCode(block, "TEMP_VAR_NAME", 99);
-    let code = + name + " = " + value + ";";
+    let code = + "xx" + name + " = " + value + ";";
     return code;
   };
 }
@@ -58,7 +58,7 @@ export function setupTempVarGetter() {
   };
 
   JavaScript["temp_var_getter"] = function (block) {
-    let name = block.getFieldValue("TEMP_VAR");
+    let name = "xx" + block.getFieldValue("TEMP_VAR");
     return [name, 0];
   };
 }

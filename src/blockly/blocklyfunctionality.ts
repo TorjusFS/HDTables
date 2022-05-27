@@ -308,7 +308,7 @@ function addConstraint(constraintId) {
         ${method.code}
         }`)
       );
-    });
+    }); 
     const oldConstraint = comp.cs[constraintId];
     if (oldConstraint) {
       console.log("THIS IS AN OLD CONSTRAINT!");

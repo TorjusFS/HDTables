@@ -17,48 +17,6 @@ export function setupToolbox() {
       },
       {
         kind: "category",
-        name: "Loops",
-        contents: [
-          {
-            kind: "block",
-            type: "controls_repeat_ext",
-            value: "TIMES",
-            field: {
-              name: "NUM",
-            }
-          },
-        ],
-      },
-      {
-        kind: "category",
-        name: "Control",
-        contents: [
-          {
-            kind: "block",
-            type: "controls_if",
-          },
-        ],
-      },
-      {
-        kind: "category",
-        name: "Logic",
-        contents: [
-          {
-            kind: "block",
-            type: "logic_compare",
-          },
-          {
-            kind: "block",
-            type: "logic_operation",
-          },
-          {
-            kind: "block",
-            type: "logic_boolean",
-          },
-        ],
-      },
-      {
-        kind: "category",
         name: "Variables",
         contents: [
           {
@@ -104,6 +62,48 @@ export function setupToolbox() {
           {
               kind: "block",
               type: "return_block"
+          },
+        ],
+      },
+      {
+        kind: "category",
+        name: "Loops",
+        contents: [
+          {
+            kind: "block",
+            type: "controls_repeat_ext",
+            value: "TIMES",
+            field: {
+              name: "NUM",
+            }
+          },
+        ],
+      },
+      {
+        kind: "category",
+        name: "Control",
+        contents: [
+          {
+            kind: "block",
+            type: "controls_if",
+          },
+        ],
+      },
+      {
+        kind: "category",
+        name: "Logic",
+        contents: [
+          {
+            kind: "block",
+            type: "logic_compare",
+          },
+          {
+            kind: "block",
+            type: "logic_operation",
+          },
+          {
+            kind: "block",
+            type: "logic_boolean",
           },
         ],
       },
